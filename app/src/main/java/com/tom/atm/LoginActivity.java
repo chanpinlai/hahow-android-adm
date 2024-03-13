@@ -1,14 +1,21 @@
 package com.tom.atm;
 
+import android.Manifest;
 import android.app.AlertDialog;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -17,6 +24,7 @@ import com.google.firebase.database.ValueEventListener;
 
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = LoginActivity.class.getSimpleName();
+    private static final int REQUEST_CODE_CAMERA = 5;
     private EditText edUserid;
     private EditText edPasswd;
     private CheckBox cbRemember;
@@ -25,18 +33,43 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        //第 1 章，第 27 單元 - Android 6.0 危險權限設計機制實作
+        //取得是0，沒取得是-1
+        int permission = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
+        if (permission == PackageManager.PERMISSION_GRANTED) {
+//            takePhoto();
+        } else {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, REQUEST_CODE_CAMERA);
+        }
+
+
         edUserid = findViewById(R.id.userid);
         edPasswd = findViewById(R.id.passwd);
         cbRemember = findViewById(R.id.cb_rem_userid);
-        cbRemember.setChecked(getPreferences(MODE_PRIVATE).getBoolean("REMEMBER_USERID",false));
+        cbRemember.setChecked(getPreferences(MODE_PRIVATE).getBoolean("REMEMBER_USERID", false));
         cbRemember.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                getPreferences(MODE_PRIVATE).edit().putBoolean("REMEMBER_USERID",isChecked).commit();
+                getPreferences(MODE_PRIVATE).edit().putBoolean("REMEMBER_USERID", isChecked).commit();
             }
         });
         String userid = getPreferences(MODE_PRIVATE).getString("USERID", "");
         edUserid.setText(userid);
+    }
+
+    private void takePhoto() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivity(intent);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQUEST_CODE_CAMERA) {
+            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                takePhoto();
+            }
+        }
     }
 
     public void login(View view) {
@@ -63,8 +96,8 @@ public class LoginActivity extends AppCompatActivity {
                         } else {
                             pw = snapshot.getValue().toString();
                             if (pw.equals(passwd)) {
-                                boolean remember = getPreferences(MODE_PRIVATE).getBoolean("REMEMBER_USERID",false);
-                                if(remember) {
+                                boolean remember = getPreferences(MODE_PRIVATE).getBoolean("REMEMBER_USERID", false);
+                                if (remember) {
                                     getPreferences(MODE_PRIVATE)
                                             .edit()
                                             .putString("USERID", userid)
