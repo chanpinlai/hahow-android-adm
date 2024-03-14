@@ -58,8 +58,8 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void takePhoto() {
-        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        startActivity(intent);
+//        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//        startActivity(intent);
     }
 
     @Override

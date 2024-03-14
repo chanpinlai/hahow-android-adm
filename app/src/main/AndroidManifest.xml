@@ -7,8 +7,10 @@
             android:required="false" />
 
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+
     <application
             android:allowBackup="true"
             android:dataExtractionRules="@xml/data_extraction_rules"
@@ -19,6 +21,9 @@
             android:supportsRtl="true"
             android:theme="@style/Theme.Atm"
             tools:targetApi="31">
+        <activity
+                android:name=".ContactActivity"
+                android:exported="false" />
         <activity
                 android:name=".LoginActivity"
                 android:exported="false" />
