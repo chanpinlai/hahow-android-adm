@@ -46,14 +46,16 @@ public class LoginActivity extends AppCompatActivity {
         edUserid = findViewById(R.id.userid);
         edPasswd = findViewById(R.id.passwd);
         cbRemember = findViewById(R.id.cb_rem_userid);
-        cbRemember.setChecked(getPreferences(MODE_PRIVATE).getBoolean("REMEMBER_USERID", false));
+        boolean remember = getSharedPreferences("adm", MODE_PRIVATE).getBoolean("REMEMBER_USERID", true);
+        cbRemember.setChecked(remember);
         cbRemember.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                getPreferences(MODE_PRIVATE).edit().putBoolean("REMEMBER_USERID", isChecked).commit();
+                getSharedPreferences("atm", MODE_PRIVATE).edit().putBoolean("REMEMBER_USERID", isChecked).commit();
             }
         });
-        String userid = getPreferences(MODE_PRIVATE).getString("USERID", "");
+        getSharedPreferences("atm", MODE_PRIVATE).edit().putString("USERID", "jack").commit();
+        String userid = getSharedPreferences("atm", MODE_PRIVATE).getString("USERID", "");
         edUserid.setText(userid);
     }
 
@@ -95,6 +97,7 @@ public class LoginActivity extends AppCompatActivity {
                                     .show();
                         } else {
                             pw = snapshot.getValue().toString();
+
                             if (pw.equals(passwd)) {
                                 boolean remember = getPreferences(MODE_PRIVATE).getBoolean("REMEMBER_USERID", false);
                                 if (remember) {

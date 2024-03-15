@@ -11,8 +11,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
-import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,14 +20,16 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.ArrayList;
 import java.util.List;
-import java.util.jar.Pack200;
 
 public class ContactActivity extends AppCompatActivity {
 
     private static final int REQUEST_CONTACTS = 80;
     private static final String TAG = ContactActivity.class.getSimpleName();
+    private List<Contact> contacts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +47,7 @@ public class ContactActivity extends AppCompatActivity {
         //read contacts
         Cursor cursor = getContentResolver().query(
                 ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
-        List<Contact> contacts = new ArrayList<>();
+        contacts = new ArrayList<>();
         while (cursor.moveToNext()) {
             //Lint 是用來標示程式中可能會有 bug 的工具，此標示用來停用它檢查。
             //姓名
@@ -75,11 +76,11 @@ public class ContactActivity extends AppCompatActivity {
             }
             contacts.add(contact);
         }
-//        ContactAdapter adapter = new ContactAdapter(contacts);
-//        RecyclerView recyclerView = findViewById(R.id.recycler);
-//        recyclerView.setHasFixedSize(true);
-//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-//        recyclerView.setAdapter(adapter);
+        ContactAdapter adapter = new ContactAdapter(contacts);
+        RecyclerView recyclerView = findViewById(R.id.recycler);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(adapter);
     }
     public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactHolder> {
         List<Contact> contacts;
@@ -97,14 +98,13 @@ public class ContactActivity extends AppCompatActivity {
         @Override
         public void onBindViewHolder(@NonNull ContactHolder holder, int position) {
             Contact contact = contacts.get(position);
-            holder.name.setText(contact.getName());
+            holder.nameText.setText(contact.getName());
             StringBuilder sb = new StringBuilder();
             for (String phone : contact.getPhones()) {
                 sb.append(phone);
+                sb.append(" ");
             }
-            holder.phone.setText(sb.toString());
-
-
+            holder.phoneText.setText(sb.toString());
         }
 
         @Override
@@ -113,33 +113,15 @@ public class ContactActivity extends AppCompatActivity {
         }
 
         public class ContactHolder extends RecyclerView.ViewHolder {
-            EditText name;
-            EditText phone;
+            TextView nameText;
+            TextView phoneText;
             public ContactHolder(View itemView){
                 super(itemView);
-                name = itemView.findViewById(android.R.id.text1);
-                phone = itemView.findViewById(android.R.id.text2);
+                nameText = itemView.findViewById(android.R.id.text1);
+                phoneText = itemView.findViewById(android.R.id.text2);
             }
         }
     }
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.menu_contact,menu);
-//        return super.onCreateOptionsMenu(menu);
-//    }
-//
-//    @Override
-//    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-//        if(item.getItemId()==R.id.action_upload){
-//            //upload to Firebase
-//            Log.d(TAG, "onOptionsItemSelected: ");
-//
-//        }
-//        return super.onOptionsItemSelected(item);
-//
-//    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -148,5 +130,24 @@ public class ContactActivity extends AppCompatActivity {
                 readContacts();
             }
         }
+    }
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        Log.d(TAG, "onCreateOptionsMenu: ");
+        getMenuInflater().inflate(R.menu.menu_contact,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if(item.getItemId()==R.id.action_upload){
+            //upload to Firebase
+            Log.d(TAG, "onOptionsItemSelected: ");
+            String userid = getSharedPreferences("atm",MODE_PRIVATE).getString("USERID",null);
+            if (userid != null) {
+                FirebaseDatabase.getInstance().getReference("users").child(userid).child("contacts").setValue(contacts);
+            }
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
