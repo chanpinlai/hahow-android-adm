@@ -7,6 +7,8 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -73,11 +75,11 @@ public class ContactActivity extends AppCompatActivity {
             }
             contacts.add(contact);
         }
-        ContactAdapter adapter = new ContactAdapter(contacts);
-        RecyclerView recyclerView = findViewById(R.id.recycler);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(adapter);
+//        ContactAdapter adapter = new ContactAdapter(contacts);
+//        RecyclerView recyclerView = findViewById(R.id.recycler);
+//        recyclerView.setHasFixedSize(true);
+//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+//        recyclerView.setAdapter(adapter);
     }
     public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactHolder> {
         List<Contact> contacts;
@@ -120,6 +122,23 @@ public class ContactActivity extends AppCompatActivity {
             }
         }
     }
+
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        getMenuInflater().inflate(R.menu.menu_contact,menu);
+//        return super.onCreateOptionsMenu(menu);
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+//        if(item.getItemId()==R.id.action_upload){
+//            //upload to Firebase
+//            Log.d(TAG, "onOptionsItemSelected: ");
+//
+//        }
+//        return super.onOptionsItemSelected(item);
+//
+//    }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {

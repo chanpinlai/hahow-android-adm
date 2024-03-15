@@ -36,4 +36,5 @@ public class Contact {
     public void setPhones(List<String> phones) {
         this.phones = phones;
     }
+
 }
