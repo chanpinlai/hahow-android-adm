@@ -4,6 +4,8 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -11,6 +13,7 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -21,6 +24,10 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public class LoginActivity extends AppCompatActivity {
     private static final String TAG = LoginActivity.class.getSimpleName();
@@ -35,14 +42,41 @@ public class LoginActivity extends AppCompatActivity {
         setContentView(R.layout.activity_login);
         //第 1 章，第 27 單元 - Android 6.0 危險權限設計機制實作
         //取得是0，沒取得是-1
-        int permission = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
-        if (permission == PackageManager.PERMISSION_GRANTED) {
-//            takePhoto();
-        } else {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, REQUEST_CODE_CAMERA);
+//        camera();
+        findViews();
+        new TestTask().execute("http://tw.yahoo.com");
+
+
+    }
+    //1.傳入型態，不傳Void
+    //2.中途要不回報資料
+    //3.結果
+    public class TestTask extends AsyncTask<String,Void,Integer>{
+
+        @Override
+        protected void onPostExecute(Integer integer) {
+            super.onPostExecute(integer);
+            Toast.makeText(LoginActivity.this,"onPostExecute:"+integer,Toast.LENGTH_LONG).show();
         }
 
+        @Override
+        protected Integer doInBackground(String... strings) {
 
+            int data;
+
+            try {
+                URL url = new URL(strings[0]);
+                data = url.openStream().read();
+            } catch (MalformedURLException e) {
+                throw new RuntimeException(e);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            return data;
+        }
+    }
+
+    private void findViews() {
         edUserid = findViewById(R.id.userid);
         edPasswd = findViewById(R.id.passwd);
         cbRemember = findViewById(R.id.cb_rem_userid);
@@ -57,6 +91,15 @@ public class LoginActivity extends AppCompatActivity {
         getSharedPreferences("atm", MODE_PRIVATE).edit().putString("USERID", "jack").commit();
         String userid = getSharedPreferences("atm", MODE_PRIVATE).getString("USERID", "");
         edUserid.setText(userid);
+    }
+
+    private void camera() {
+        int permission = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
+        if (permission == PackageManager.PERMISSION_GRANTED) {
+            takePhoto();
+        } else {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA}, REQUEST_CODE_CAMERA);
+        }
     }
 
     private void takePhoto() {
