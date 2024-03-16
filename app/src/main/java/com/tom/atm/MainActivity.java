@@ -131,6 +131,8 @@ public class MainActivity extends AppCompatActivity {
 
         }else if(function.getIcon()==R.drawable.func_balance){
         }else if(function.getIcon()==R.drawable.func_finance){
+            Intent finance = new Intent(this,FinanceActivity.class);
+            startActivity(finance);
         }else if(function.getIcon()==R.drawable.func_contacts){
             Intent contacts = new Intent(this,ContactActivity.class);
             startActivity(contacts);

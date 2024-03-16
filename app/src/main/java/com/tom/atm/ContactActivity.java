@@ -56,7 +56,7 @@ public class ContactActivity extends AppCompatActivity {
             //電話
             @SuppressLint("Range") int id = cursor.getInt(cursor.getInt(cursor.getColumnIndex(ContactsContract.Contacts._ID)));
 //            Log.d(TAG, "readContacts: id=" + id);
-            Contact contact = new Contact(id,name);
+            Contact contact = new Contact(id, name);
             @SuppressLint("Range") int hasPhone = cursor.getInt(cursor.getInt(cursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER)));
 //            Log.d(TAG, "readContacts: hasPhone=" + hasPhone);
             if (hasPhone == 1) {
@@ -82,16 +82,19 @@ public class ContactActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
     }
+
     public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactHolder> {
         List<Contact> contacts;
-        public ContactAdapter(List<Contact> contacts){
+
+        public ContactAdapter(List<Contact> contacts) {
             this.contacts = contacts;
 
         }
+
         @NonNull
         @Override
         public ContactHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = getLayoutInflater().inflate(android.R.layout.simple_list_item_2,parent,false);
+            View view = getLayoutInflater().inflate(android.R.layout.simple_list_item_2, parent, false);
             return new ContactHolder(view);
         }
 
@@ -115,13 +118,15 @@ public class ContactActivity extends AppCompatActivity {
         public class ContactHolder extends RecyclerView.ViewHolder {
             TextView nameText;
             TextView phoneText;
-            public ContactHolder(View itemView){
+
+            public ContactHolder(View itemView) {
                 super(itemView);
                 nameText = itemView.findViewById(android.R.id.text1);
                 phoneText = itemView.findViewById(android.R.id.text2);
             }
         }
     }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -131,19 +136,21 @@ public class ContactActivity extends AppCompatActivity {
             }
         }
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         Log.d(TAG, "onCreateOptionsMenu: ");
-        getMenuInflater().inflate(R.menu.menu_contact,menu);
+        getMenuInflater().inflate(R.menu.menu_contact, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if(item.getItemId()==R.id.action_upload){
+        if (item.getItemId() == R.id.action_upload) {
             //upload to Firebase
             Log.d(TAG, "onOptionsItemSelected: ");
-            String userid = getSharedPreferences("atm",MODE_PRIVATE).getString("USERID",null);
+            String userid = getSharedPreferences("atm", MODE_PRIVATE).getString("USERID", null);
+            Log.d(TAG, "userid: " + userid);
             if (userid != null) {
                 FirebaseDatabase.getInstance().getReference("users").child(userid).child("contacts").setValue(contacts);
             }
