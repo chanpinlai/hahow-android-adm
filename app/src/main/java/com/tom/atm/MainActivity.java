@@ -127,16 +127,17 @@ public class MainActivity extends AppCompatActivity {
 
     private void itemClick(Function function) {
         Log.d(TAG, "itemClick: " + function.getName());
-        if(function.getIcon()==R.drawable.func_transaction){
-
-        }else if(function.getIcon()==R.drawable.func_balance){
-        }else if(function.getIcon()==R.drawable.func_finance){
-            Intent finance = new Intent(this,FinanceActivity.class);
+        if (function.getIcon() == R.drawable.func_transaction) {
+            Intent trans = new Intent(this, TransActivity.class);
+            startActivity(trans);
+        } else if (function.getIcon() == R.drawable.func_balance) {
+        } else if (function.getIcon() == R.drawable.func_finance) {
+            Intent finance = new Intent(this, FinanceActivity.class);
             startActivity(finance);
-        }else if(function.getIcon()==R.drawable.func_contacts){
-            Intent contacts = new Intent(this,ContactActivity.class);
+        } else if (function.getIcon() == R.drawable.func_contacts) {
+            Intent contacts = new Intent(this, ContactActivity.class);
             startActivity(contacts);
-        }else if(function.getIcon()==R.drawable.func_exit){
+        } else if (function.getIcon() == R.drawable.func_exit) {
             finish();
         }
 //        switch (function.getIcon()) {

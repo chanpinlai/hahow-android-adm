@@ -44,7 +44,8 @@ public class LoginActivity extends AppCompatActivity {
         //取得是0，沒取得是-1
 //        camera();
         findViews();
-        new TestTask().execute("http://tw.yahoo.com");
+        //第 1 章，第 32 單元 - 執行緒觀念與耗時工作設計(AsyncTask類別)
+//        new TestTask().execute("http://tw.yahoo.com");
 
 
     }
