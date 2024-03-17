@@ -1,14 +1,14 @@
 package com.tom.atm;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
@@ -20,7 +20,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -39,6 +38,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText edUserid;
     private EditText edPasswd;
     private CheckBox cbRemember;
+    private Intent helloService1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,8 +47,17 @@ public class LoginActivity extends AppCompatActivity {
         //Fragment
         FragmentManager manager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = manager.beginTransaction();
-        fragmentTransaction.add(R.id.container_news,NewsFragment.getInstance());
+        fragmentTransaction.add(R.id.container_news, NewsFragment.getInstance());
         fragmentTransaction.commit();
+        //Service
+        helloService1 = new Intent(this, HelloService.class);
+        helloService1.putExtra("NAME", "T1");
+        startService(helloService1);
+        helloService1.putExtra("NAME", "T2");
+        startService(helloService1);
+        helloService1.putExtra("NAME", "T3");
+        startService(helloService1);
+
 
         //第 1 章，第 27 單元 - Android 6.0 危險權限設計機制實作
         //取得是0，沒取得是-1
@@ -59,15 +68,38 @@ public class LoginActivity extends AppCompatActivity {
 
 
     }
+
+    //接收機制
+    BroadcastReceiver receiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d(TAG, "onReceive: Hello");
+        }
+    };
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        IntentFilter filter = new IntentFilter(HelloService.ACTION_HELLO_DONE);
+        registerReceiver(receiver, filter);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+//        stopService(helloService1);
+        unregisterReceiver(receiver);
+    }
+
     //1.傳入型態，不傳Void
     //2.中途要不回報資料
     //3.結果
-    public class TestTask extends AsyncTask<String,Void,Integer>{
+    public class TestTask extends AsyncTask<String, Void, Integer> {
 
         @Override
         protected void onPostExecute(Integer integer) {
             super.onPostExecute(integer);
-            Toast.makeText(LoginActivity.this,"onPostExecute:"+integer,Toast.LENGTH_LONG).show();
+            Toast.makeText(LoginActivity.this, "onPostExecute:" + integer, Toast.LENGTH_LONG).show();
         }
 
         @Override
