@@ -221,4 +221,9 @@ public class LoginActivity extends AppCompatActivity {
     public void quit(View view) {
 
     }
+    public void map(View view){
+        Intent intent = new Intent(this,MapsActivity.class);
+        startActivity(intent);
+
+    }
 }

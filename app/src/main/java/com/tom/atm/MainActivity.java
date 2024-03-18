@@ -41,8 +41,8 @@ public class MainActivity extends AppCompatActivity {
             startActivityForResult(intent, REQUEST_RESULT);
 
         }
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+//        Toolbar toolbar = findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener((view) -> {
