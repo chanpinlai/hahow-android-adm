@@ -226,4 +226,9 @@ public class LoginActivity extends AppCompatActivity {
         startActivity(intent);
 
     }
+    public void web(View view){
+        Intent intent = new Intent(this,WebViewActivity.class);
+        startActivity(intent);
+
+    }
 }
